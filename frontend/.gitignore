@@ -14,5 +14,3 @@ app.json
 # macOS
 .DS_Store
 apikey.js
-**/.env
-**/server/node_modules
