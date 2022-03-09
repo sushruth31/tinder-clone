@@ -11,7 +11,8 @@ import { View } from "react-native";
 import ReduxWrapper from "./index";
 import { createApolloClient } from "./gql";
 import { ApolloProvider } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Settings from "./settings";
 
 let Stack = createNativeStackNavigator();
 let Tab = createBottomTabNavigator();
@@ -26,55 +27,42 @@ function ModalScreen({ navigation }) {
 }
 
 function Home() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          let unreadMessages;
+          if (route.name === "Chats") {
+            //handle unreadmessage logic here
+            unreadMessages = 2;
+            iconName = "chat";
+          } else if (route.name === "Settings") {
+            iconName = "settings";
+          }
+
+          return (
+            <View>
+              {route.name === "Chats" && <Text style={tw("absolute left-8 font-bold")}>{unreadMessages}</Text>}
+              <Icon name={iconName} color={color} size={size} />
+            </View>
+          );
+        },
+      })}>
+      <Tab.Screen name="Chats" component={Chats} />
+      <Tab.Screen name="Settings" component={Settings} />
+    </Tab.Navigator>
+  );
+}
+
+function AppContentswApollo() {
   let { jwt } = useSelector(getUser);
   let [client] = useState(createApolloClient(jwt));
+  let dispatch = useDispatch();
 
   return (
     <ApolloProvider client={client}>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-            let unreadMessages;
-            if (route.name === "Chats") {
-              //handle unreadmessage logic here
-              unreadMessages = 2;
-              iconName = "chat";
-            } else if (route.name === "Settings") {
-              iconName = "settings";
-            }
-
-            return (
-              <View>
-                {route.name === "Chats" && <Text style={tw("absolute left-8 font-bold")}>{unreadMessages}</Text>}
-                <Icon name={iconName} color={color} size={size} />
-              </View>
-            );
-          },
-        })}>
-        <Tab.Screen name="Chats" component={Chats} />
-        <Tab.Screen name="Settings" component={Settings} />
-      </Tab.Navigator>
-    </ApolloProvider>
-  );
-}
-
-function Settings() {
-  return (
-    <View>
-      <Text>This is the options page</Text>
-    </View>
-  );
-}
-
-function AppContents() {
-  let user = useSelector(getUser);
-
-  let dispatch = useDispatch();
-
-  if (user) {
-    return (
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Group>
@@ -99,8 +87,14 @@ function AppContents() {
           </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
-    );
-  } else return <Login />;
+    </ApolloProvider>
+  );
+}
+
+function AppContents() {
+  let user = useSelector(getUser);
+
+  return user ? <AppContentswApollo /> : <Login />;
 }
 
 export default function App() {

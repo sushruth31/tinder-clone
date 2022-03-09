@@ -8,14 +8,27 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 const users = [
-  { name: "Jeff", uid: "fds8f76dsf" },
-  { name: "Sam", uid: "asdf23" },
-  { name: "Bob", uid: "fdsf" },
-  { name: "Adam", uid: "afsd234" },
+  { username: "Jeff", uid: "fds8f76dsf", password: "123" },
+  { username: "Sam", uid: "asdf23", password: "124dfs" },
+  { username: "Bob", uid: "fdsf", password: "124dfs" },
+  { username: "Adam", uid: "afsd234", password: "124dfs" },
 ];
 
 export default function ({ navigate }) {
   let dispatch = useDispatch();
+
+  async function handleLogin(username, password) {
+    //this will return a jwt if successful. pass in the username and pass
+
+    try {
+      let res = await axios.post("http://localhost:8080/jwt", { username, password });
+      let { uid, jwt } = res.data;
+      dispatch(setUser({ username, uid, jwt }));
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+  }
 
   return (
     <SafeAreaView>
@@ -24,15 +37,11 @@ export default function ({ navigate }) {
       </View>
 
       <View style={tw`flex items-center mt-10`}>
-        {users.map(({ name, uid }) => (
+        {users.map(({ username, uid, password }) => (
           <Button
             key={uid}
-            onPress={async () => {
-              let res = await axios.post("http://localhost:8080/jwt", { uid });
-              let jwt = res.data;
-              dispatch(setUser({ name, uid, jwt }));
-            }}
-            title={name}
+            onPress={() => handleLogin(username, password)}
+            title={username}
             buttonStyle={{
               backgroundColor: "rgba(78, 116, 289, 1)",
               borderRadius: 3,
