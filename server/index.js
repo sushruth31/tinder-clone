@@ -33,18 +33,6 @@ const GETUSERQUERY = gql`
 
 app.use(express.json());
 
-app.post("/test", async (req, res) => {
-  let response = await client.query({
-    query: GETUSERQUERY,
-    variables: {
-      username: "Jeff",
-      password: "123",
-    },
-  });
-
-  res.json(response);
-});
-
 app.post("/jwt", async (req, res) => {
   let { username, password } = req.body;
 

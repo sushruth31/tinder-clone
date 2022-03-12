@@ -42,29 +42,19 @@ function link(authToken) {
   );
 }
 
-export const MESSAGESBYUSER = gql`
-  query MESSAGEBYUSER($uid: String!) {
-    messages(where: { uid: { _eq: $uid } }) {
-      message
-      messagedate
-      messageid
+export const CARDSQUERY = gql`
+  query Cards($currentuser: String, $offset: Int) {
+    users(limit: 10, offset: $offset, where: { uid: { _neq: $currentuser } }) {
+      name
+      uid
+      username
+    }
+    photos(where: { uid: { _neq: $currentuser } }) {
+      photourl
       uid
     }
-    messages_aggregate {
-      aggregate {
-        count
-      }
-    }
-  }
-`;
-
-export const MESSAGESBYUSERSUB = gql`
-  subscription MESSAGESBYUSER($uid: String!) {
-    messages(where: { uid: { _eq: $uid } }) {
-      message
-      messagedate
-      messageid
-      uid
+    swipes(where: { userwhomadeswipe: { _eq: $currentuser }, direction: { _eq: "left" } }) {
+      userswipedon
     }
   }
 `;
