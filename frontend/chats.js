@@ -8,7 +8,6 @@ import tw from "./tw";
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { CARDSQUERY } from "./gql";
-import { getOffset } from "./slices/cardsslice";
 
 export default function ({ navigate }) {
   let dispatch = useDispatch();
@@ -19,11 +18,13 @@ export default function ({ navigate }) {
     variables: { currentuser: uid },
   });
 
-  let [organizedData, setOrganizedData] = useState(data);
+  let [cards, setCards] = useState(data);
 
   useEffect(() => {
     if (!data) return;
-    console.log(data);
+    let { users, swipes } = data;
+    //filter out the cards that the user has swiped on
+    setCards(users.filter(({ uid }) => !swipes.some(({ uid: swipeuid }) => swipeuid === uid)));
   }, [data]);
 
   //render an error message if error
@@ -34,11 +35,18 @@ export default function ({ navigate }) {
       </SafeAreaView>
     );
 
-  useEffect(() => console.log(data), [data]);
+  //loading screen
+
+  if (loading)
+    return (
+      <SafeAreaView>
+        <Text>Loading</Text>
+      </SafeAreaView>
+    );
 
   return (
     <SafeAreaView>
-      <Text>This is the cards page</Text>
+      <Text>{JSON.stringify(cards)}</Text>
     </SafeAreaView>
   );
 }
