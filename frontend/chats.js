@@ -14,10 +14,17 @@ export default function ({ navigate }) {
   let dispatch = useDispatch();
   let { uid } = useSelector(getUser);
   let [searchText, setSearchText] = useState("");
+
   let { data, loading, error } = useQuery(CARDSQUERY, {
     variables: { currentuser: uid },
   });
-  let offset = useSelector(getOffset);
+
+  let [organizedData, setOrganizedData] = useState(data);
+
+  useEffect(() => {
+    if (!data) return;
+    console.log(data);
+  }, [data]);
 
   //render an error message if error
   if (error)

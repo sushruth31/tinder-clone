@@ -43,17 +43,17 @@ function link(authToken) {
 }
 
 export const CARDSQUERY = gql`
-  query Cards($currentuser: String, $offset: Int) {
-    users(limit: 10, offset: $offset, where: { uid: { _neq: $currentuser } }) {
+  query Cards($currentuser: String) {
+    users(where: { uid: { _neq: $currentuser } }, limit: 10) {
       name
       uid
       username
+      photos {
+        photourl
+        photoid
+      }
     }
-    photos(where: { uid: { _neq: $currentuser } }) {
-      photourl
-      uid
-    }
-    swipes(where: { userwhomadeswipe: { _eq: $currentuser }, direction: { _eq: "left" } }) {
+    swipes(where: { userwhomadeswipe: { _eq: $currentuser } }) {
       userswipedon
     }
   }
