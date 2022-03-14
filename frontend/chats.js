@@ -1,13 +1,12 @@
 import { Button, Text } from "react-native-elements";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./slices/userslice";
-import { TextInput, View } from "react-native";
-import { ScrollView, SafeAreaView } from "react-native";
-import { ListItem, Icon } from "react-native-elements";
+import { SafeAreaView } from "react-native";
 import tw from "./tw";
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { CARDSQUERY } from "./gql";
+import Swiper from "react-native-deck-swiper";
 
 export default function ({ navigate }) {
   let dispatch = useDispatch();
@@ -27,26 +26,22 @@ export default function ({ navigate }) {
     setCards(users.filter(({ uid }) => !swipes.some(({ uid: swipeuid }) => swipeuid === uid)));
   }, [data]);
 
-  //render an error message if error
-  if (error)
-    return (
-      <SafeAreaView>
-        <Text>Something went wrong</Text>
-      </SafeAreaView>
-    );
-
-  //loading screen
-
-  if (loading)
-    return (
-      <SafeAreaView>
-        <Text>Loading</Text>
-      </SafeAreaView>
-    );
-
   return (
     <SafeAreaView>
-      <Text>{JSON.stringify(cards)}</Text>
+      {error ? (
+        <Text>Error</Text>
+      ) : loading ? (
+        <Text>Loading</Text>
+      ) : (
+        <Swiper
+          cards={cards}
+          renderCard={(card, index) => (
+            <View>
+              <Text>Uo</Text>
+            </View>
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }

@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Chats from "./chats";
+import Cards from "./chats";
 import Login from "./login";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, logout } from "./slices/userslice";
@@ -13,6 +13,7 @@ import { createApolloClient } from "./gql";
 import { ApolloProvider } from "@apollo/client";
 import { useState } from "react";
 import Settings from "./settings";
+import Messages from "./messages";
 
 let Stack = createNativeStackNavigator();
 let Tab = createBottomTabNavigator();
@@ -33,24 +34,23 @@ function Home() {
         headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          let unreadMessages;
-          if (route.name === "Chats") {
-            //handle unreadmessage logic here
-            unreadMessages = 2;
-            iconName = "chat";
+          if (route.name === "Cards") {
+            iconName = "search";
           } else if (route.name === "Settings") {
             iconName = "settings";
+          } else if (route.name === "Messages") {
+            iconName = "chat";
           }
 
           return (
             <View>
-              {route.name === "Chats" && <Text style={tw("absolute left-8 font-bold")}>{unreadMessages}</Text>}
               <Icon name={iconName} color={color} size={size} />
             </View>
           );
         },
       })}>
-      <Tab.Screen name="Chats" component={Chats} />
+      <Tab.Screen name="Cards" component={Cards} />
+      <Tab.Screen name="Messages" component={Messages} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
@@ -76,7 +76,7 @@ function AppContentswApollo() {
                 headerRight: () => (
                   <Icon style={tw(`pl-4 text-blue-500`)} onPress={_ => navigation.navigate("NewMessage")} name="edit" />
                 ),
-                title: "Chats",
+                title: "Cards",
               })}
               name="Main"
               component={Home}
