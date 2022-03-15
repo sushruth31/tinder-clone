@@ -14,6 +14,7 @@ import { ApolloProvider } from "@apollo/client";
 import { useState } from "react";
 import Settings from "./settings";
 import Messages from "./messages";
+import Profile from "./profile";
 
 let Stack = createNativeStackNavigator();
 let Tab = createBottomTabNavigator();
@@ -84,6 +85,9 @@ function AppContentswApollo() {
           </Stack.Group>
           <Stack.Group screenOptions={{ presentation: "modal" }}>
             <Stack.Screen options={{ title: "New Message" }} name="NewMessage" component={ModalScreen} />
+          </Stack.Group>
+          <Stack.Group>
+            <Stack.Screen options={{ title: "Profile" }} name="Profile" component={Profile} />
           </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
