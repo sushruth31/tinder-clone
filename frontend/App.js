@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Cards from "./chats";
+import Cards from "./cards";
 import Login from "./login";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, logout } from "./slices/userslice";

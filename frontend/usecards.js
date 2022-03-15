@@ -21,5 +21,5 @@ export default function useCards() {
     setCards(users.filter(({ uid }) => !swipes.some(({ userswipedon }) => userswipedon === uid)));
   }, [data]);
 
-  return { cards, setCards, loading, error };
+  return { cards, setCards, loading, error, uid };
 }
