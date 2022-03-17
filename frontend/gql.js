@@ -58,3 +58,28 @@ export const CARDSQUERY = gql`
     }
   }
 `;
+
+export const SWIPE = gql`
+  mutation MyMutation($direction: String, $userswipedon: String, $userwhomadeswipe: String) {
+    insert_swipes(objects: { direction: $direction, userswipedon: $userswipedon, userwhomadeswipe: $userwhomadeswipe }) {
+      returning {
+        swipeid
+      }
+    }
+  }
+`;
+
+export const CHECKIFMATCH = gql`
+  query MyQuery($direction: String, $userwhomadeswipe: String, $userswipedon: String) {
+    swipes(
+      limit: 1
+      where: {
+        userwhomadeswipe: { _eq: $userwhomadeswipe }
+        userswipedon: { _eq: $userswipedon }
+        direction: { _eq: $direction }
+      }
+    ) {
+      swipeid
+    }
+  }
+`;

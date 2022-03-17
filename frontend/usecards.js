@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { CARDSQUERY } from "./gql";
 import { getUser } from "./slices/userslice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function useCards() {
   let { uid } = useSelector(getUser);

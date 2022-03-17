@@ -3,8 +3,11 @@ import { SafeAreaView, View, Image, TouchableOpacity } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import useCards from "./usecards";
 import tw from "./tw";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useMutation, useQuery } from "@apollo/client";
+import { SWIPE } from "./gql";
+import useMatch from "./usematch";
 
 function Buttons({ card }) {
   let buttons = [
@@ -34,16 +37,33 @@ export default function () {
   let [imageLoading, setImageLoading] = useState(false);
   let [cardsempty, setCardsEmpty] = useState(false);
   let navigation = useNavigation();
+  let [action, setAction] = useState(null);
+  let [swipeHandler] = useMutation(SWIPE);
+  let [otherUser, setOtherUser] = useState(null);
+  let isMatch = useMatch(action?.direction, otherUser);
 
-  //mutation queries
+  useEffect(() => {
+    //handle swipe here {cardIndex, direction}
+    if (!action) return;
+    let { direction, cardIndex } = action;
+    //get swiped card info
+    let userswipedon = cards[cardIndex].uid;
 
-  function onSwipeLeft() {
-    return null;
-  }
+    swipeHandler({
+      variables: {
+        direction,
+        userswipedon,
+        userwhomadeswipe: uid,
+      },
+    });
 
-  function onSwipeRight() {
-    return null;
-  }
+    setOtherUser(userswipedon);
+  }, [action]);
+
+  useEffect(() => {
+    if (isMatch) console.log("its a match!");
+    //handle match screen here
+  }, [isMatch]);
 
   return (
     <SafeAreaView>
@@ -61,8 +81,8 @@ export default function () {
                 <Swiper
                   onSwipedAll={() => setCardsEmpty(true)}
                   cards={cards}
-                  onSwipedLeft={onSwipeLeft}
-                  onSwipeRight={onSwipeRight}
+                  onSwipedLeft={i => setAction({ direction: "left", cardIndex: i })}
+                  onSwipedRight={i => setAction({ direction: "right", cardIndex: i })}
                   renderCard={({ uid, photos, name, username }) => {
                     return (
                       <TouchableOpacity
