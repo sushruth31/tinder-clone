@@ -66,4 +66,4 @@ app.post("/jwt", async (req, res) => {
   res.json({ uid, jwt: token });
 });
 
-app.listen(port, () => console.log("server on port 8080"));
+app.listen(port, () => console.log(`server running on port ${port}`));

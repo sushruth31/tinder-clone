@@ -83,3 +83,13 @@ export const CHECKIFMATCH = gql`
     }
   }
 `;
+
+export const RESETSWIPES = gql`
+  mutation MyMutation($userwhomadeswipe: String) {
+    delete_swipes(where: { userwhomadeswipe: { _eq: $userwhomadeswipe } }) {
+      returning {
+        swipeid
+      }
+    }
+  }
+`;

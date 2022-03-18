@@ -5,8 +5,8 @@ import useCards from "./usecards";
 import tw from "./tw";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { useMutation, useQuery } from "@apollo/client";
-import { SWIPE } from "./gql";
+import { useMutation } from "@apollo/client";
+import { RESETSWIPES, SWIPE } from "./gql";
 import useMatch from "./usematch";
 
 function Buttons({ card }) {
@@ -39,12 +39,18 @@ export default function () {
   let navigation = useNavigation();
   let [action, setAction] = useState(null);
   let [swipeHandler] = useMutation(SWIPE);
+  let [resetHandler] = useMutation(RESETSWIPES);
   let [otherUser, setOtherUser] = useState(null);
   let isMatch = useMatch(action?.direction, otherUser);
 
   useEffect(() => {
     //handle swipe here {cardIndex, direction}
     if (!action) return;
+
+    //handle reset
+    if (action === "reset") {
+    }
+
     let { direction, cardIndex } = action;
     //get swiped card info
     let userswipedon = cards[cardIndex].uid;
@@ -112,6 +118,7 @@ export default function () {
       {cards?.length > 0 && !cardsempty && <Buttons />}
 
       <TouchableOpacity
+        onClick={() => setAction("reset")}
         style={[{ position: "relative", marginTop: 10 }, tw("flex items-center bg-red-400 w-1/2 rounded-xl")]}>
         <Text style={tw("text-white")}>Reset</Text>
       </TouchableOpacity>

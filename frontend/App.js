@@ -15,6 +15,20 @@ import { useState } from "react";
 import Settings from "./settings";
 import Messages from "./messages";
 import Profile from "./profile";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+
+function getHeaderTitle(route) {
+  let routeName = getFocusedRouteNameFromRoute(route) ?? "Cards";
+
+  switch (routeName) {
+    case "Cards":
+      return "Cards";
+    case "Messages":
+      return "Messages";
+    case "Settings":
+      return "Settings";
+  }
+}
 
 let Stack = createNativeStackNavigator();
 let Tab = createBottomTabNavigator();
@@ -31,28 +45,30 @@ function ModalScreen({ navigation }) {
 function Home() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === "Cards") {
-            iconName = "search";
-          } else if (route.name === "Settings") {
-            iconName = "settings";
-          } else if (route.name === "Messages") {
-            iconName = "chat";
-          }
+      screenOptions={({ route }) => {
+        return {
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === "Cards") {
+              iconName = "search";
+            } else if (route.name === "Settings") {
+              iconName = "settings";
+            } else if (route.name === "Messages") {
+              iconName = "chat";
+            }
 
-          return (
-            <View>
-              <Icon name={iconName} color={color} size={size} />
-            </View>
-          );
-        },
-      })}>
+            return (
+              <View>
+                <Icon name={iconName} color={color} size={size} />
+              </View>
+            );
+          },
+        };
+      }}>
       <Tab.Screen name="Cards" component={Cards} />
       <Tab.Screen name="Messages" component={Messages} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen options={{ tabBarLabel: "Settings!" }} name="Settings" component={Settings} />
     </Tab.Navigator>
   );
 }
@@ -68,17 +84,19 @@ function AppContentswApollo() {
         <Stack.Navigator>
           <Stack.Group>
             <Stack.Screen
-              options={({ navigation, route }) => ({
-                headerLeft: () => (
-                  <Text style={tw(`pl-4 text-blue-500`)} onPress={() => dispatch(logout())}>
-                    Logout
-                  </Text>
-                ),
-                headerRight: () => (
-                  <Icon style={tw(`pl-4 text-blue-500`)} onPress={_ => navigation.navigate("NewMessage")} name="edit" />
-                ),
-                title: "Cards",
-              })}
+              options={({ navigation, route }) => {
+                return {
+                  headerLeft: () => (
+                    <Text style={tw(`pl-4 text-blue-500`)} onPress={() => dispatch(logout())}>
+                      Logout
+                    </Text>
+                  ),
+                  headerRight: () => (
+                    <Icon style={tw(`pl-4 text-blue-500`)} onPress={_ => navigation.navigate("NewMessage")} name="edit" />
+                  ),
+                  title: getHeaderTitle(route),
+                };
+              }}
               name="Main"
               component={Home}
             />
